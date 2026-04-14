@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Get the URL of the "origin" remote
+remote_url=$(git remote get-url origin 2>/dev/null)
+
+if [[ -z "$remote_url" ]]; then
+  echo "❌ No se encontró un remoto llamado 'origin'."
+  exit 1
+fi
+
+# Convert SSH to HTTPS
+convert_ssh_to_https() {
+  local ssh_url="$1"
+  # Extract host, user and repo from git@host:user/repo.git format
+  if [[ "$ssh_url" =~ git@([^:]+):(.+)\.git ]]; then
+    echo "https://${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+  else
+    echo "$ssh_url"
+  fi
+}
+
+# Convert if it's SSH
+if [[ "$remote_url" == git@* ]]; then
+  web_url=$(convert_ssh_to_https "$remote_url")
+else
+  # Remove .git if it's in the URL
+  web_url="${remote_url%.git}"
+fi
+
+echo "🌐 Opening: $web_url"
+
+# Open in browser
+if command -v xdg-open &> /dev/null; then
+  xdg-open "$web_url"
+elif command -v open &> /dev/null; then
+  open "$web_url"
+elif command -v start &> /dev/null; then
+  start "$web_url"
+else
+  echo "❌ No se encontró un comando para abrir el navegador."
+  exit 1
+fi
+

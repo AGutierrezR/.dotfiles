@@ -1,0 +1,192 @@
+[ui]
+editor = "nvim --clean"
+# diff-editor = "nvim --clean"
+default-command = ["log", "-n", "10"]
+
+
+[revset-aliases]
+# Explain why a revision is immutable
+'why_immutable(r)' = 'r | roots(r:: & immutable_heads())'
+
+# Returns the bookmark(s) closest to `to` when walking backwards in history.
+# Useful to find the nearest named reference (branch/bookmark) that contains
+# the given commit.
+'closest_bookmark(to)' = 'heads(::to & bookmarks())'
+
+# Returns the closest commit to `to` that is suitable for pushing.
+# Filters for commits that:
+#   - are reachable from `to`
+#   - are not empty
+#   - or are merge commits
+#   - and have a non-empty description
+# This is typically used to find a reasonable "push boundary".
+'closest_pushable(to)' = 'heads(::to & ~description(exact:"") & (~empty() | merges()))'
+
+# Megamerge helpers
+# - `trunk()..` is the set of commits that are not ancestors of `trunk()`, excluding `trunk()` itself.
+# - `roots(x)`: the set of commits in x that have no parents in x. In other words, the "starting points" of the commits in x.
+'mutable_roots()' = 'roots(trunk()..) & mutable()'
+# Returns the closest merge commit to `to`
+'closest_merge(to)' = 'heads(::to & merges())' # TODO: learn about this
+
+# Returns the first commit(s) after `trunk()` on the path to `to`.
+# Effectively identifies where a branch diverged from trunk, i.e. the
+# "start" of the branch relative to trunk.
+'branch_start(to)' = 'heads(::to & trunk())+ & ::to'
+
+# stack(x, n) is the set of mutable commits reachable from 'x', with 'n'
+# parents. 'n' is often useful to customize the display and return set for
+# certain operations. 'x' can be used to target the set of 'roots' to traverse,
+# e.g. @ is the current stack.
+'stack()' = 'stack(@)'
+'stack(x)' = 'stack(x, 2)'
+'stack(x, n)' = 'ancestors(reachable(x, mutable()), n)'
+
+# The current set of "open" works. It is defined as: all stacks that are
+# reachable from my working copy, or any other commit I wrote.
+# n = 1, meaning that nothing from `trunk()` is included, so all resulting
+# commits are mutable by definition.
+# 'open()' = 'stack(mine() | @, 1)'
+
+# All my commits that haven't landed yet. I use this one constantly.
+'open()' = 'open(mine())'
+'open(domain)' = 'ancestors(domain ~ ::immutable_heads(), 2) ~ ::trunk()'
+'open_bookmarks()' = 'ancestors((mine() & bookmarks()) ~ ::immutable_heads(), 2)'
+
+# Work in progress
+'wip()' = 'description(glob:"wip:*") ~ ::immutable_heads()'
+
+# Any commits considered private by git.private-commits
+'private()' = '(description(glob:"private:*") | description(glob:"wip:*"))'
+
+# Branches that are already contained in the trunk (or any other commit)
+'cleanup()' = '(bookmarks() | remote_bookmarks()) & ::immutable_heads() ~ immutable_heads()'
+[aliases]
+# ════════════════════════════════════════════════════════════════════════════
+# Abbreviations
+# ════════════════════════════════════════════════════════════════════════════
+sq = ["squash"]
+ws = ["workspace"]
+d = ["describe"]
+l = ["log"]
+
+bl = ["bookmark", "list"]
+bc = ["bookmark", "create"]
+bd = ["bookmark", "delete"]
+bm = ["bookmark", "move"]
+
+# ════════════════════════════════════════════════════════════════════════════
+# Viewing History
+# ════════════════════════════════════════════════════════════════════════════
+
+# Commonly log formats
+logc = ["log", "-T", "builtin_log_comfortable"]
+
+l5 = ["log", "-n", "5"]
+l10 = ["log", "-n", "10"]
+ls = ["log", "--summary"]
+ll = ["log", "--stat", "-T", "builtin_log_detailed"]
+
+# Get all open stacks of work (open stacks are the ones that dont have trunk() as ancestor)
+open = ["log", "-r", "open()"]
+
+## OPINIONATED: `git log`-like log.
+long = ["log", "--no-graph", "-T", "builtin_log_detailed"]
+short = ["log", "--no-graph", "-T", "builtin_log_oneline"]
+git-log = ["long", "-r", "::@"]
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# Navigation & Editing
+# ════════════════════════════════════════════════════════════════════════════
+fresh = ["new", "trunk()"] # creates a new change based on trunk
+
+n = ["next", "--edit"]
+"edit+" = ["next", "--edit"]
+p = ["prev", "--edit"]
+edit- = ["prev", "--edit"]
+
+desc- = ["desc", "-r", "@-"]
+new- = ["new", "-r", "@-"]
+split- = ["split", "-r", "@-"]
+
+show- = ["show", "-r", "@-"]
+
+# ════════════════════════════════════════════════════════════════════════════
+# Rewriting History
+# ════════════════════════════════════════════════════════════════════════════
+
+plan = ["new", "--no-edit", "heads(@::)", "-m"]
+
+# Insert's a new commit without editing it. Expected usage:
+#
+#   $ jj insert -B xyz -m "foo"
+insert = ["new", "--no-edit"]
+
+plan-at = ["new", "--no-edit", "-A"]
+prepend = ["new", "--no-edit", "-A", "heads(::@-)", "-m"]
+
+# bring a branch up to date with trunk()
+retrunk = ["rebase", "-d", "trunk()"]
+up = ["rebase", "--skip-emptied", "-d", "trunk()"]
+
+# Retrunk the current stack of work.
+reheat = ["rebase", "-d", "trunk()", "-s", "roots(trunk()..stack(@))"]
+# Take content from any change, and move it into @. The inverse of 'eject'
+# Similar to absorb but allows you to use interactive mode (-i)
+# - jj consume xyz path/to/file`
+consume = ["squash", "--keep-emptied", "--into", "@", "--from"]
+
+# Eject content from @ into any other change. The inverse of 'consume'
+# Similar to absorb but allows you to use interactive mode (-i)
+# - jj eject xyz --interactive
+eject = ["squash", "--keep-emptied", "--from", "@", "--into"]
+
+# collapse:
+# combine all of the revs from the current one to the start of the "bookmark" into one
+collapse = ["squash", "-f", "branch_start(@)+::@", "-t", "branch_start(@)"]
+
+
+# Rebase all my branches/megamerge on trunk().
+# restack = ["rebase", "-d", "trunk()", "-s", "all:mutable_roots()"] # in 0.30.0
+restack = ["rebase", "-d", "trunk()", "-s", "mutable_roots()"]
+# Put the given revset into the megamerge
+# will put the commit after trunk() and before the closest merge commit.
+# `jj stack <revset>` to include specific revs
+stack = ["rebase", "-A", "trunk()", "-B", "closest_merge(@)", "-r"]
+
+# closest_merge(@)+:: ~ empty() show all commits after the megamerge commit
+# `jj stage` to include the whole stack after the megamerge
+stage = ["stack", "closest_merge(@)+:: ~ empty()"]
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# Bookmarks related
+# ════════════════════════════════════════════════════════════════════════════
+
+# tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())"] # moves the closest bookmark to the closest pushable commit
+tug = ["bookmark", "move", "--from", "closest_bookmark(@-)", "--to", "@-"] # moves the closest bookmark to the closest pushable commit
+
+# Git Interoperability
+gf = ["git", "fetch"]
+gp = ["git", "push"]
+
+# ════════════════════════════════════════════════════════════════════════════
+# Others
+# ════════════════════════════════════════════════════════════════════════════
+
+## OPINIONATED: Specify `@-` as the target for various commands by appending `-` to the end of the command name.
+diff- = ["diff", "-r", "@-"]
+diffedit- = ["diffedit", "-r", "@-"]
+
+# Advanced Workflows
+# OPINIONATED: Squash changes without abandoning the source change if it turns
+# empty (remove desc, changeId and so on). See https://github.com/jj-vcs/jj/issues/3815 for motivation.
+# Notably, this makes `jj amend` without any arguments (operating on `@`) keep
+# the same change ID.
+append = ["squash", "--keep-emptied"]
+
+
+# Shorter (and thus better) names, IMO
+cat = ["file", "show"]
+credit = ["file", "annotate"]

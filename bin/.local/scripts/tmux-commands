@@ -1,0 +1,104 @@
+#!/usr/bin/env zsh
+set -euo pipefail
+setopt extendedglob
+
+typeset -A COMMANDS
+typeset -A SHORTCUTS
+typeset -A BACKGROUND
+typeset -a LABELS
+
+add_command() {
+  local label="$1"
+  local command="$2"
+  local shortcut="${3:-}"
+  local background="${4:-}"
+
+  COMMANDS[$label]="$command"
+  SHORTCUTS[$label]="$shortcut"
+  BACKGROUND[$label]="$background"
+  LABELS+=("$label")
+}
+
+# Agregar comandos aquí
+add_command "Clone git repo" "tmux-clone-repo" "" "false"
+add_command "New tmux session" "tmux-sessionizer" "ctrl+f" "false"
+add_command "Kill tmux session" "tmux kill-session" "" "false"
+add_command "Kill tmux server" "tmux kill-server" "" "false"
+
+color_dim=$'\e[90m'
+color_reset=$'\e[0m'
+
+list_commands() {
+  for label in "${LABELS[@]}"; do
+    local shortcut="${SHORTCUTS[$label]}"
+    if [[ -n "$shortcut" ]]; then
+      print -r -- "$label ${color_dim}(${shortcut})${color_reset}"
+    else
+      print -r -- "$label"
+    fi
+  done
+}
+
+strip_ansi() {
+  local input="$1"
+  print -r -- "${input//\e\[[0-9;]*[[:alpha:]]/}"
+}
+
+strip_shortcut() {
+  local input="$1"
+  input="${input%%\(*}"
+  print -r -- "${input%%[[:space:]]#}"
+}
+
+strip_cr() {
+  local input="$1"
+  print -r -- "${input%$'\r'}"
+}
+
+normalize_label() {
+  local input="$1"
+  input="$(strip_ansi "$input")"
+  input="$(strip_shortcut "$input")"
+  input="$(strip_cr "$input")"
+  input="${input//[[:space:]]/ }"
+  input="${input##[[:space:]]#}"
+  input="${input%%[[:space:]]#}"
+  print -r -- "$input"
+}
+
+run_command() {
+  local label="$1"
+  local command="${COMMANDS[$label]:-}"
+  local background="${BACKGROUND[$label]:-}"
+
+  if [[ -z "$command" ]]; then
+    print -r -- "Unknown command label: $label" >&2
+    return 1
+  fi
+
+  if [[ "$background" == "true" ]]; then
+    local wrapped_command="export PATH=\"$HOME/.local/bin:$HOME/bin:$PATH\"; $command"
+    zsh -c "$wrapped_command" &
+    return 0
+  fi
+
+  eval "$command"
+}
+
+action="${1:-list}"
+shift || true
+
+case "$action" in
+  list)
+    list_commands
+    ;;
+  exec)
+    label_raw="$*"
+    label="$(normalize_label "$label_raw")"
+    run_command "$label"
+    ;;
+  *)
+    print -r -- "Usage: tmux-commands [list|exec <label>]" >&2
+    exit 1
+    ;;
+esac

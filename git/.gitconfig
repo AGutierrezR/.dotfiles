@@ -1,0 +1,267 @@
+[init]
+    defaultBranch = main
+[diff]
+    algorithm = histogram    # Clearer diffs on moved/edited lines
+    colorMoved = plain       # Highlight moved blocks in diffs
+    mnemonicPrefix = true    # More intuitive refs in diff output
+[rerere]
+    enabled = true
+[alias]
+    # Fast config edit
+    ec = config --global -e
+
+    # Basic
+    cl = clone
+
+    # Info
+    rl = reflog
+    st = status
+    s = status -sb
+    l = log --oneline --decorate
+    l5 = log --oneline --decorate -n 5
+    l10 = log --oneline --decorate -n 10
+    lr = log --oneline --decorate --reverse
+    lo = log --format=oneline
+    lor = log --format=oneline --reverse
+    lg = log --oneline --decorate --graph
+    lnm = log --oneline --decorate --no-merge
+    ahead = log --oneline @{push}..
+    behind = log --oneline ..@{u}
+    merge-point = "!f() { git log -1 --oneline $(git merge-base \"$1\" \"$2\"); }; f"
+
+    # Info with filtering
+    rlf = reflog --grep
+    lf = log --oneline --decorate --grep
+
+    # Adding / Deleting
+    a = !git add . && git status
+    au = !git add -u . && git status
+    all = add . 
+    whole = add -u .
+    unstage = restore --stage
+    undone = restore
+    clut = clean --dfx
+
+    # Committing
+    c = commit 
+    cm = commit -m
+    cam = commit -am
+    amend = commit --amend
+    append = commit --amend --no-edit
+    appenda = commit --amend -a --no-edit
+    rollback = "!f() { \
+	if [ -z \"$1\" ]; then \
+	git reset --hard HEAD^; \
+	else \
+	git reset --hard HEAD~$1; \
+	fi; \
+	}; f"
+
+  # rollback = reset --hard HEAD^
+  # rollback2 = reset --hard HEAD~2
+  # rollback3 = reset --hard HEAD~3
+  # rollback4 = reset --hard HEAD~4
+  # rollback5 = reset --hard HEAD~5
+    uncommit = reset --soft HEAD^
+    recommit = commit -c ORIG_HEAD
+    recommit-no-edit = commit -C ORIG_HEAD
+    fixup = commit --fixup
+    autosquash = rebase -i --autosquash
+    rautosquash = rebase -i --root --autosquash
+
+    # Adding and commiting
+    ac = !git add . && git commit 
+    acm = !git add . && git commit -m
+    aam = !git add --all && git commit --amend --no-edit
+    initial = !git add . && git commit -m \"Initial Commit\"
+    save = !git add . && git commit -m \"CHECKPOINT\"
+
+    # Branch
+    b = branch
+    br = branch -r
+    ba = branch -a
+    bd = branch -d
+    bD = branch -D
+    bm = branch -m
+    bd-origin = push origin --delete
+    bn = rev-parse --abbrev-ref HEAD
+
+    # Branch name from upstream
+    brn = !git for-each-ref --format='%(upstream:short)' $(git symbolic-ref -q HEAD)
+
+    # Checkout
+    co = checkout
+    cob = checkout -b
+
+    com = checkout master
+    cod = checkout develop
+    cop = checkout -
+    cot = checkout --track
+
+    # Switch (Replace Checkout)
+    sw = switch
+    swc = switch -c
+
+    swm = switch main
+    swd = switch develop
+    swp = switch -
+    swt = switch --track
+
+    sw-mrg = switch -m
+    sw-out = switch -f -
+    sw-orphan = switch --orphan
+    sw-detach = switch --detach 
+
+    # Diff
+    d = diff
+    dsh = diff -staged HEAD
+    dh = diff HEAD
+    dprev = diff HEAD~1 HEAD --sta
+
+    # Merge
+    mrg = merge
+    mrgd = merge develop
+    mrgc = merge --continue
+    mrga = merge --abort
+
+    # Rebase
+    rbs = rebase
+    rbsd = rebase develop
+    rbsi = rebase -i
+    rbsir = rebase -i --root
+    rbsc = rebase --continue
+    rbsa = rebase --abort
+
+    # Push/Pull
+    ps = push
+    psf = push --force-with-lease
+    psff = push -f
+    pl = pull
+    pld = pull origin develop --rebase
+    plf = pull --ff-only
+    f = fetch -p
+    fst = !git f && git st
+
+    # Cherry Pick
+    cp = cherry-pick
+
+    # Stash
+    store = stash -m
+    spit = stash show -p
+    list = stash list
+    pop = stash pop
+    sap = stash apply
+    drop = stash drop
+    drop-all = stash clear
+  ; store-last = !git reset --soft HEAD~1 && git stash
+  # Store Last Commit in Stash (with message)
+    store-last = !git reset --soft HEAD~1 && git stash push -m "Stashed commit: $(git log --format=%B --max-count=1 HEAD@{1})"
+
+    # Hardcode Stash
+    pop0 = stash pop stash@{0}
+    pop1 = stash pop stash@{1}
+    pop2 = stash pop stash@{2}
+    pop3 = stash pop stash@{3}
+    pop4 = stash pop stash@{4}
+    pop5 = stash pop stash@{5}
+    pop7 = stash pop stash@{6}
+    pop8 = stash pop stash@{7}
+    pop9 = stash pop stash@{9}
+
+    sap0 = stash apply stash@{0}
+    sap1 = stash apply stash@{1}
+    sap2 = stash apply stash@{2}
+    sap3 = stash apply stash@{3}
+    sap4 = stash apply stash@{4}
+    sap5 = stash apply stash@{5}
+    sap6 = stash apply stash@{6}
+    sap7 = stash apply stash@{7}
+    sap8 = stash apply stash@{8}
+    sap9 = stash apply stash@{9}
+
+    drop0 = stash drop stash@{0}
+    drop1 = stash drop stash@{1}
+    drop2 = stash drop stash@{2}
+    drop3 = stash drop stash@{3}
+    drop4 = stash drop stash@{4}
+    drop5 = stash drop stash@{5}
+    drop6 = stash drop stash@{6}
+    drop7 = stash drop stash@{7}
+    drop8 = stash drop stash@{8}
+    drop9 = stash drop stash@{9}
+
+    # Reset
+    resume = !git reset --soft HEAD~1 && git reset
+    rsh = reset --hard
+    rss = reset --soft
+
+    # Reset to Upstream (remote)
+    rsr = !git reset --hard $(git for-each-ref --format='%(upstream:short)' $(git symbolic-ref -q HEAD))
+
+    # Hardcode Reset
+    rset1 = reset --hard HEAD~1
+    rset2 = reset --hard HEAD~2
+    rset3 = reset --hard HEAD~3
+    rset4 = reset --hard HEAD~4
+    rset5 = reset --hard HEAD~5
+    rset6 = reset --hard HEAD~6
+    rset7 = reset --hard HEAD~7
+    rset8 = reset --hard HEAD~8
+    rset9 = reset --hard HEAD~9
+    rset10 = reset --hard HEAD~10
+
+    rset-soft1 = reset --soft HEAD~1
+    rset-soft2 = reset --soft HEAD~2
+    rset-soft3 = reset --soft HEAD~3
+    rset-soft4 = reset --soft HEAD~4
+    rset-soft5 = reset --soft HEAD~5
+    rset-soft6 = reset --soft HEAD~6
+    rset-soft7 = reset --soft HEAD~7
+    rset-soft8 = reset --soft HEAD~8
+    rset-soft9 = reset --soft HEAD~9
+    rset-soft10 = reset --soft HEAD~10
+
+    # Bisect
+    bcts = bisect start
+    bctb = bisect bad
+    bctg = bisect good
+
+    # Worktree
+    wt = worktree
+    wtl = worktree list
+    wta = worktree add
+    wtr = worktree remove
+    wtp = worktree prune
+    wtd = "!git worktree list | fzf -m | awk '{print $1}' | xargs -I {} rm -rf '{}' && git worktree prune"
+
+    ####################
+    # SPECIAL COMMANDS #
+    ####################
+
+    # Exclude
+    exclude = "!code .git/info/exclude"
+    # Pushing Current Branch (using origin)
+    psu = !git push -u origin $(git branch --show-current)
+    # Reflog of current branch
+    rlcb = !git reflog show $(git branch --show-current)
+    # List of Alias
+    la = "!git config -l | grep alias | cut -c 7-"
+
+    # Commits
+    # List files in a commit
+    ls = diff-tree --no-commit-id --name-only -r
+    last = ls HEAD
+    # copy = "!git show --oneline | head -1 | awk '{ print $1 }' | pbcopy"
+    copy = "!git rev-parse --short HEAD | pbcopy"
+
+    # Branches
+    # List deleted branches from remote
+    brd = "!git fetch --all -p; git branch -vv | grep ': desaparecido]' | awk '{ print $1 }'"
+    # Delete the deleted branche from remote
+
+    # Pseudo Stash
+    savepoint = !git add -A && git commit -qm "SAVEPOINT" && git reset HEAD~1 --hard
+
+    # TESTING ZONE
+    which = !git branch | grep -i
+    mrg-detach = !sh -c 'git swc temp-$(date +%d%m%Y) && git sw $1 && git mrg temp-$(date +%d%m%Y) && git bd temp-$(date +%d%m%Y)' -

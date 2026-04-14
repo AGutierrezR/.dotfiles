@@ -1,0 +1,12 @@
+font-size = 21
+font-family = JetBrainsMono Nerd Font Mono
+# font-thicken = true # Enable this to make the font thicker like kitty
+
+theme = catppuccin-mocha.conf
+
+# Set Option key as alt
+macos-option-as-alt = true
+
+# keybindings
+keybind = cmd+s>r=reload_config
+keybind = cmd+s>x=close_surface

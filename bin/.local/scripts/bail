@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Bail out of processes
+
+if [[ "$1" == "opencode" ]]; then
+	killall -9 .opencode
+elif [[ "$1" == "n" || "$1" == "node" ]]; then
+	killall -9 node
+else
+	killall -9 nvim
+fi
+

@@ -1,0 +1,46 @@
+#!/bin/bash
+
+if [[ $# -eq 1 ]]; then
+    selected=$1
+else
+    selected=$(zoxide query -l | fzf)
+fi
+
+# If no selection is made, exit the script
+if [[ -z $selected ]]; then
+    exit 0
+fi
+
+# Get the base name of the selected directory and replace dots with underscores
+selected_name=$(basename "$selected" | tr . _)
+# Check if a tmux server is running by looking for its process
+tmux_running=$(pgrep tmux)
+
+# $TMUX checks if we are already inside a tmux session
+# $tmux_running checks if a tmux server is running in the background
+
+# If not inside a tmux session AND no tmux server is running, create a new tmux session
+if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+    tmux new-session -s $selected_name -c $selected
+    exit 0
+fi
+
+# If a tmux session with the selected name already exists, attach to it
+if tmux has-session -t=$selected_name 2> /dev/null; then
+    # tmux attach-session -t $selected_name
+    tmux switch-client -t $selected_name
+    exit 0
+fi
+
+# If outside a tmux session and no session with the selected name exists, create a new session
+if [[ -z $TMUX ]] && ! tmux has-session -t=$selected_name 2> /dev/null; then
+    tmux new-session -s $selected_name -c $selected
+    exit 0
+fi
+
+# If inside tmux but the session does not exist, create a detached session and switch to it
+if ! tmux has-session -t=$selected_name 2> /dev/null; then
+    tmux new-session -ds $selected_name -c $selected
+    tmux switch-client -t $selected_name
+fi
+

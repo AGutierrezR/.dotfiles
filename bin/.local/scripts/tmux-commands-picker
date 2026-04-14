@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT="$HOME/.dotfiles/bin/.local/scripts/tmux-commands"
+
+$SCRIPT list \
+  | fzf --reverse --prompt='Commands ❯ ' --pointer='▶' --header='Select a command' --ansi \
+  | xargs -I {} $SCRIPT exec {}

@@ -1,0 +1,12 @@
+@vscode/vsce
+generator-code
+ts-lit-plugin
+typescript-language-server
+typescript-styled-plugin
+typescript
+yo
+vscode-langservers-extracted
+live-server
+custom-elements-languageserver
+lit-analyzer
+

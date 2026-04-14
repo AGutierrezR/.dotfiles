@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# Helper Functions
+select_worktree() {
+    git worktree list | fzf | awk '{print $1}'
+}
+
+get_session_name() {
+    local directory="$1"
+    basename "$directory" | tr . _
+}
+
+is_tmux_running() {
+    [[ -n $(pgrep tmux) ]]
+}
+
+is_inside_tmux() {
+    [[ -n $TMUX ]]
+}
+
+session_exists() {
+    local session_name="$1"
+    tmux has-session -t="$session_name" 2> /dev/null
+}
+
+# Session Management Functions
+create_new_session() {
+    local session_name="$1"
+    local directory="$2"
+    tmux new-session -s "$session_name" -c "$directory"
+}
+
+create_detached_session() {
+    local session_name="$1"
+    local directory="$2"
+    tmux new-session -ds "$session_name" -c "$directory"
+}
+
+switch_to_session() {
+    local session_name="$1"
+    tmux switch-client -t "$session_name"
+}
+
+# Main Logic
+main() {
+    # Select worktree
+    local selected=$(select_worktree)
+    [[ -z $selected ]] && exit 0
+
+    # Get session name from selected directory
+    local session_name=$(get_session_name "$selected")
+
+    # Handle different scenarios
+    if ! is_inside_tmux; then
+        if ! is_tmux_running; then
+            # No tmux running, create new session
+            create_new_session "$session_name" "$selected"
+        elif session_exists "$session_name"; then
+            # Session exists, attach to it
+            tmux attach-session -t "$session_name"
+        else
+            # Create new session
+            create_new_session "$session_name" "$selected"
+        fi
+    else
+        if session_exists "$session_name"; then
+            # Inside tmux, session exists, switch to it
+            switch_to_session "$session_name"
+        else
+            # Inside tmux, create detached session and switch
+            create_detached_session "$session_name" "$selected"
+            switch_to_session "$session_name"
+        fi
+    fi
+}
+
+# Execute main function
+main

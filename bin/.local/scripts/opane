@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Toggle a special tmux pane: if it exists, kill it; otherwise create a new split pane
+# Get the stored pane ID from the custom tmux window option @openpane
+P=$(tmux show -wqv @openpane)
+# Check if the pane ID exists and is still a valid/active pane
+if [ -n "$P" ] && tmux lsp -F'#{pane_id}' | grep -q ^$P; then
+     # Pane exists, so kill it and unset the stored pane ID
+     tmux killp -t$P
+     tmux set -wu @openpane
+else
+     # Pane doesn't exist, so create a new vertical split (32% width) running opencode, and store its ID
+     P=$(tmux splitw -h -l 32% -PF'#{pane_id}' "opencode --agent plan")
+     tmux set -w @openpane "$P"
+fi
