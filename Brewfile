@@ -42,6 +42,8 @@ brew "neovim"
 brew "pnpm"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
+# Theme for zsh
+brew "powerlevel10k"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.12"
 # SVG rendering tool and library
@@ -54,8 +56,6 @@ brew "rm-improved"
 brew "rmpc"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
-# Cross-shell prompt for astronauts
-brew "starship"
 # Simplified and community-driven man pages
 brew "tldr"
 # Terminal multiplexer
