@@ -19,8 +19,10 @@ bindkey -M viins '^h'    backward-delete-char
 bindkey -M viins '^k'    kill-line
 # ^l clear-screen
 # ^m accept-line
-bindkey -M viins '^n'    down-line-or-history
-bindkey -M viins '^p'    up-line-or-history
+# bindkey -M viins '^n'    down-line-or-history
+# bindkey -M viins '^p'    up-line-or-history
+bindkey -M viins '^p'    history-search-backward
+bindkey -M viins '^n'    history-search-forward
 bindkey -M viins '^u'    kill-buffer
 
 # Copy word prior word or prior word to last word copied
