@@ -42,8 +42,6 @@ brew "neovim"
 brew "pnpm"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
-# Theme for zsh
-brew "powerlevel10k"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.12"
 # SVG rendering tool and library
@@ -72,10 +70,6 @@ brew "yazi"
 brew "yt-dlp"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
-# Fish-like fast/unobtrusive autosuggestions for zsh
-brew "zsh-autosuggestions"
-# Fish shell like syntax highlighting for zsh
-brew "zsh-syntax-highlighting"
 # Interactive TUI for Homebrew
 brew "gromgit/brewtils/taproom"
 # Fast file synchronization and network forwarding for remote development
