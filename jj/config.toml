@@ -122,8 +122,6 @@ plan = ["new", "--no-edit", "heads(@::)", "-m"]
 #
 #   $ jj insert -B xyz -m "foo"
 insert = ["new", "--no-edit"]
-
-plan-at = ["new", "--no-edit", "-A"]
 prepend = ["new", "--no-edit", "-A", "heads(::@-)", "-m"]
 
 # bring a branch up to date with trunk()
