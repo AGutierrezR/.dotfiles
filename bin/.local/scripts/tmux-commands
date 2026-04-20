@@ -19,8 +19,9 @@ add_command() {
   LABELS+=("$label")
 }
 
-# Agregar comandos aquí
+# Add commands here
 add_command "Clone git repo" "tmux-clone-repo" "" "false"
+add_command "Open repo" "open-repo" "" "false"
 add_command "New tmux session" "tmux-sessionizer" "ctrl+f" "false"
 add_command "Kill tmux session" "tmux kill-session" "" "false"
 add_command "Kill tmux server" "tmux kill-server" "" "false"
