@@ -31,9 +31,6 @@ alias ls='ls -G'
 alias ldot='ls -ld .*'
 alias lt='ls -ltFho'
 
-# NPM Aliases
-alias nvm='fnm'
-alias nv='node -v'
 
 # Functions
 function take() {
@@ -48,6 +45,16 @@ function c() {
     tmux clear-history
   fi
 }
+
+function dev-versions() {
+  echo "node version: $(node -v)"
+  echo "npm version: $(npm -v)"
+  echo "pnpm version: $(pnpm -v)"
+}
+
+# NPM Aliases
+alias nv='node -v'
+alias clean-npm='rm -fr package-lock.json node_modules pnpm-lock.yaml yarn.lock'
 
 function npmi() {
   # Removing NPM related stuff
