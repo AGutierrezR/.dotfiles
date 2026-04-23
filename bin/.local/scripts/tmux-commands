@@ -20,7 +20,7 @@ add_command() {
 }
 
 # Add commands here
-add_command "Clone git repo" "tmux-clone-repo" "" "false"
+add_command "Clone git repo" "tmux-clone-repo" "ctrl+shift+g" "false"
 add_command "Open repo" "open-repo" "" "false"
 add_command "New tmux session" "tmux-sessionizer" "ctrl+f" "false"
 add_command "Kill tmux session" "tmux kill-session" "" "false"
