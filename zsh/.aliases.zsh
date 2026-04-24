@@ -54,7 +54,7 @@ function dev-versions() {
 
 # NPM Aliases
 alias nv='node -v'
-alias clean-npm='rm -fr package-lock.json node_modules pnpm-lock.yaml yarn.lock'
+alias npmc='rm -fr node_modules package-lock.json pnpm-lock.yaml yarn.lock'
 
 function npmi() {
   # Removing NPM related stuff
