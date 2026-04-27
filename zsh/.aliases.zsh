@@ -31,6 +31,7 @@ alias ls='ls -G'
 alias ldot='ls -ld .*'
 alias lt='ls -ltFho'
 
+alias chat='pi --model big-pickle -p'
 
 # Functions
 function take() {

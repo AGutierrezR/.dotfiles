@@ -38,6 +38,9 @@ ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS+=(forward-char vi-forward-char)
 zinit light Aloxaf/fzf-tab
 zinit light junegunn/fzf-git.sh
 
+# Add q for macros
+zinit light cal2195/q
+
 # Add scripts to PATH
 export PATH="$HOME/bin/.local/scripts:$PATH"
 export PATH="$HOME/.tmuxifier/bin/:$PATH"
@@ -83,6 +86,9 @@ eval "$(atuin init zsh --disable-up-arrow)"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
 
+export EDITOR="nvim"
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
 
