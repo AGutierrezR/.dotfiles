@@ -48,7 +48,7 @@ if [[ -d $repo_path ]]; then
   fi
 else
   # Ask if user wants shallow or full clone
-  clone_type=$(gum choose --header="Select clone type:" "Full clone" "Shallow clone (--depth 1)") || exit 0
+  clone_type=$(gum choose --header="Select clone type:" "Shallow clone (--depth 1)" "Full clone") || exit 0
 
   # Clone the repository
     gum style --foreground="blue" "Cloning $repo_url to $repo_path..."
