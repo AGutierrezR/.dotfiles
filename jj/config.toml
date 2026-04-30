@@ -140,6 +140,10 @@ consume = ["squash", "--keep-emptied", "--into", "@", "--from"]
 # - jj eject xyz --interactive
 eject = ["squash", "--keep-emptied", "--from", "@", "--into"]
 
+# compact:
+# -t points to the target commit (the one we're squashing into)
+compact = ["squash", "-f"]
+
 # collapse:
 # combine all of the revs from the current one to the start of the "bookmark" into one
 collapse = ["squash", "-f", "branch_start(@)+::@", "-t", "branch_start(@)"]
