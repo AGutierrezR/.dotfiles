@@ -1,0 +1,3 @@
+# Applications
+shift + ctrl - f1 : "$HOME/.dotfiles/bin/.local/scripts/macos/misc/switchApp.sh" Ghostty
+shift + ctrl - f2 : "$HOME/.dotfiles/bin/.local/scripts/macos/misc/switchApp.sh" Spotify

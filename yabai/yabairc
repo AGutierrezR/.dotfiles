@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# by default, tile all windows
+yabai -m config layout stack
+
+
+# Exceptions
+yabai -m rule --add app="^System Settings$" layer=above manage=off
