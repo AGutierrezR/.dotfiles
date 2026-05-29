@@ -1,5 +1,6 @@
 [ui]
-editor = "nvim --clean"
+# editor = "nvim --clean"
+editor = "nvim --cmd \"let g:load_plugins + v:false\""
 # diff-editor = "nvim --clean"
 default-command = ["log", "-n", "10"]
 
