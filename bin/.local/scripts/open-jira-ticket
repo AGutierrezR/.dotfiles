@@ -13,6 +13,12 @@ if ! git rev-parse --git-dir &> /dev/null; then
   exit 1
 fi
 
+if [[ -z "$JIRA_BASE_URL" ]]; then
+  echo "❌ JIRA_BASE_URL is not set."
+  echo "Please set JIRA_BASE_URL in the script: $0"
+  exit 1
+fi
+
 # --- Ticket extraction helpers (called as subcommands) ---
 
 if [[ "$1" == "--local-tickets" ]]; then
