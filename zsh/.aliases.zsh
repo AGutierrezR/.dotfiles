@@ -31,7 +31,8 @@ alias ls='ls -G'
 alias ldot='ls -ld .*'
 alias lt='ls -ltFho'
 
-alias chat='pi --model big-pickle -p'
+# alias chat='pi --model big-pickle -p'
+alias chat='opencode run'
 
 # Functions
 function take() {
