@@ -12,6 +12,8 @@ brew "diff-so-fancy"
 brew "fd"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# Github command-line tool
+brew "gh"
 # Distributed revision control system
 brew "git"
 # Tool for glamorous shell scripts
@@ -38,8 +40,6 @@ brew "mpd", restart_service: :changed
 brew "mprocs"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Fast, disk space efficient package manager
-brew "pnpm"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
 # Interpreted, interactive, object-oriented programming language
@@ -54,6 +54,8 @@ brew "rm-improved"
 brew "rmpc"
 # 7-Zip is a file archiver with a high compression ratio
 brew "sevenzip"
+# Interactive TUI for Homebrew
+brew "taproom"
 # Simplified and community-driven man pages
 brew "tldr"
 # Terminal multiplexer
