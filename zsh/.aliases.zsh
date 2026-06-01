@@ -2,6 +2,7 @@
 alias dotfiles="vim $DOTFILES"
 alias zrc='vim ~/.zshrc'
 alias zenv='vim ~/.zshenv'
+alias zhist='vim $HISTFILE'
 alias aliases="vim $DOTFILES/zsh/.aliases.zsh"
 alias galiases="vim $DOTFILES/git/.gitconfig"
 alias reload='source ~/.zshrc'
