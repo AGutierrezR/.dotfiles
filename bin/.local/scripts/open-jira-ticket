@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+
+JIRA_BASE_URL=""
+
+p
+if ! command -v fzf &> /dev/null; then
+  echo "❌ fzf is not installed."
+  exit 1
+fi
+
+if ! git rev-parse --git-dir &> /dev/null; then
+  echo "❌ Not inside a git repository."
+  exit 1
+fi
+
+# --- Ticket extraction helpers (called as subcommands) ---
+
+if [[ "$1" == "--local-tickets" ]]; then
+  branches=$(git reflog show --format='%D' HEAD 2>/dev/null \
+    | grep -oE 'refs/heads/[^ ,]+' \
+    | sed 's|refs/heads/||' \
+    | awk '!seen[$0]++')
+  all_branches=$(git branch --format='%(refname:short)' 2>/dev/null)
+  branches=$({ echo "$branches"; echo "$all_branches"; } | awk '!seen[$0]++')
+
+  while IFS= read -r branch; do
+    if [[ "$branch" =~ ([A-Z]+-[0-9]+) ]]; then
+      echo "${BASH_REMATCH[1]}"
+    fi
+  done <<< "$branches" | awk '!seen[$0]++'
+  exit 0
+fi
+
+if [[ "$1" == "--remote-tickets" ]]; then
+  # Local tickets first (reflog order), then remote-only tickets appended
+  local_branches=$(git reflog show --format='%D' HEAD 2>/dev/null \
+    | grep -oE 'refs/heads/[^ ,]+' \
+    | sed 's|refs/heads/||' \
+    | awk '!seen[$0]++')
+  all_local=$(git branch --format='%(refname:short)' 2>/dev/null)
+  local_branches=$({ echo "$local_branches"; echo "$all_local"; } | awk '!seen[$0]++')
+
+  remote_branches=$(git branch -r --format='%(refname:short)' 2>/dev/null \
+    | sed 's|[^/]*/||')
+
+  {
+    while IFS= read -r branch; do
+      if [[ "$branch" =~ ([A-Z]+-[0-9]+) ]]; then
+        echo "${BASH_REMATCH[1]}"
+      fi
+    done <<< "$local_branches"
+
+    while IFS= read -r branch; do
+      if [[ "$branch" =~ ([A-Z]+-[0-9]+) ]]; then
+        echo "${BASH_REMATCH[1]}"
+      fi
+    done <<< "$remote_branches"
+  } | awk '!seen[$0]++'
+  exit 0
+fi
+
+# --- Main: launch fzf with toggle between local and remote ---
+
+script="$0"
+
+selected=$(bash "$script" --local-tickets | fzf \
+  --prompt="💻 [local] Select a ticket (alt-a: remote): " \
+  --no-sort \
+  --bind "alt-a:transform:[[ \$FZF_PROMPT == *local* ]] \
+    && echo 'change-prompt(🌐 [remote] Select a ticket: )+reload(bash \"$script\" --remote-tickets)+unbind(alt-a)' \
+    || echo ''")
+
+if [[ -z "$selected" ]]; then
+  exit 0
+fi
+
+url="${JIRA_BASE_URL}/${selected}"
+echo "🎫 Opening: $url"
+
+# Open in browser
+if command -v xdg-open &> /dev/null; then
+  xdg-open "$url"
+elif command -v open &> /dev/null; then
+  open "$url"
+elif command -v start &> /dev/null; then
+  start "$url"
+else
+  echo "❌ No browser command found."
+  exit 1
+fi

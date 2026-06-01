@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# Get the URL of the "origin" remote
+remote_url=$(git remote get-url origin 2>/dev/null)
+
+if [[ -z "$remote_url" ]]; then
+  echo "❌ No remote named 'origin' found."
+  exit 1
+fi
+
+if ! command -v fzf &> /dev/null; then
+  echo "❌ fzf is not installed."
+  exit 1
+fi
+
+# Convert SSH to HTTPS
+convert_ssh_to_https() {
+  local ssh_url="$1"
+  # Standard format: git@host:org/repo.git
+  if [[ "$ssh_url" =~ ^git@([^:]+):(.+)\.git$ ]]; then
+    echo "https://${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+  # GHE format: user@host:org/repo.git (e.g. domain@domain.ghe.com:org/repo.git)
+  elif [[ "$ssh_url" =~ ^[^@]+@([^:]+):(.+)\.git$ ]]; then
+    echo "https://${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+  else
+    echo "$ssh_url"
+  fi
+}
+
+# Convert if it's SSH
+if [[ "$remote_url" == *@*:* ]]; then
+  base_url=$(convert_ssh_to_https "$remote_url")
+else
+  base_url="${remote_url%.git}"
+fi
+
+# Get only branches that exist in origin
+remote_branches=$(git branch -r 2>/dev/null \
+  | grep -v 'HEAD' \
+  | sed 's|.*origin/||' \
+  | awk 'NF && !seen[$0]++')
+
+# Extract checkout order from reflog, filtered to only origin branches
+reflog_branches=$(git reflog 2>/dev/null \
+  | grep 'checkout: moving from' \
+  | sed 's/.*checkout: moving from .* to //' \
+  | awk 'NF && !seen[$0]++')
+
+# Keep reflog order but only branches present in origin, then append remaining origin branches
+branches=$(
+  {
+    echo "$reflog_branches" | while IFS= read -r b; do
+      echo "$remote_branches" | grep -qxF "$b" && echo "$b"
+    done
+    echo "$remote_branches"
+  } | awk 'NF && !seen[$0]++'
+)
+
+# Pick branch with fzf
+selected=$(echo "$branches" | fzf \
+  --prompt="🌿 Select a branch: " \
+  --no-sort)
+
+if [[ -z "$selected" ]]; then
+  exit 0
+fi
+
+web_url="${base_url}/tree/${selected}"
+echo "🌐 Opening: $web_url"
+
+# Open in browser
+if command -v xdg-open &> /dev/null; then
+  xdg-open "$web_url"
+elif command -v open &> /dev/null; then
+  open "$web_url"
+elif command -v start &> /dev/null; then
+  start "$web_url"
+else
+  echo "❌ No browser command found."
+  exit 1
+fi
