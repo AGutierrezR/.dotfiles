@@ -149,6 +149,7 @@ compact = ["squash", "-f"]
 # combine all of the revs from the current one to the start of the "bookmark" into one
 collapse = ["squash", "-f", "branch_start(@)+::@", "-t", "branch_start(@)"]
 
+crush = ["squash", "--from"]
 
 # Rebase all my branches/megamerge on trunk().
 # restack = ["rebase", "-d", "trunk()", "-s", "all:mutable_roots()"] # in 0.30.0
