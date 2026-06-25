@@ -117,6 +117,8 @@
     dsh = diff -staged HEAD
     dh = diff HEAD
     dprev = diff HEAD~1 HEAD --sta
+    hdiff = -c core.pager=\"hunk pager\" diff
+    hshow = -c core.pager=\"hunk pager\" show
 
     # Merge
     mrg = merge
