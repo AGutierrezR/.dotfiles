@@ -1,0 +1,2 @@
+daily_notes_folder = "journals/"   # relativo a tu vault
+dailynote = "%Y-%m-%d"
