@@ -5,6 +5,8 @@ prSections:
     filters: "is:open review-requested:@me"
   - title: "Involved"
     filters: "is:open involves:@me -author:@me"
+  - title: "Open"
+    filters: "is:open"
 
 issuesSections:
   - title: "My Issues"
@@ -13,6 +15,8 @@ issuesSections:
     filters: "is:open assignee:@me"
   - title: "Involved"
     filters: "is:open involves:@me -author:@me"
+  - title: "Open"
+    filters: "is:open"
 
 notificationsSections:
   - title: "All"
