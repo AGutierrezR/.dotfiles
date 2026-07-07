@@ -37,7 +37,7 @@ notificationsSections:
     filters: "reason:team-mention"
 
 pager:
-  diff: less
+  diff: "hunk patch"
 showAuthorIcons: true
 smartFilteringAtLaunch: true
 
@@ -66,11 +66,11 @@ keybindings:
       command: >
         cd {{.RepoPath}}; lazygit
   prs:
-    - key: y
+    - key: ctrl+y
       name: copy branch
       command: >
         echo -n "{{.HeadRefName}}" | pbcopy
-    - key: W
+    - key: ctrl+w
       name: worktree
       command: >
         tmux new-window -n "{{.HeadRefName}}"
