@@ -10,6 +10,6 @@ if [ -n "$P" ] && tmux lsp -F'#{pane_id}' | grep -q ^$P; then
      tmux set -wu @myspecialpane
 else
      # Pane doesn't exist, so create a new horizontal split (15% height) and store its ID
-     P=$(tmux splitw -p 15 -PF'#{pane_id}')
+     P=$(tmux splitw -p 15 "#{pane_current_path}" -PF'#{pane_id}')
      tmux set -w @myspecialpane "$P"
 fi

@@ -10,6 +10,6 @@ if [ -n "$P" ] && tmux lsp -F'#{pane_id}' | grep -q ^$P; then
      tmux set -wu @openpane
 else
      # Pane doesn't exist, so create a new vertical split (32% width) running opencode, and store its ID
-     P=$(tmux splitw -h -l 32% -PF'#{pane_id}' "opencode --agent plan")
+     P=$(tmux splitw -h -l 32% -c "#{pane_current_path}" -PF'#{pane_id}' "opencode --agent plan")
      tmux set -w @openpane "$P"
 fi
