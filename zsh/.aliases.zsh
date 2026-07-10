@@ -16,6 +16,7 @@ alias ta="tmux a"
 alias tk="tmux kill-server"
 # alias cc="clear && tmux clear-history"
 alias zrm="zoxide query -l | fzf -m | xargs -I {} zoxide remove {}"
+alias mp="mprocs --npm"
 
 # # Easier Navigation
 # if command -v zoxide &> /dev/null; then
