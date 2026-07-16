@@ -9,7 +9,7 @@ cd "$vimwiki_dir" || exit
 
 # Check if a tmux session with the note name already exists
 if ! tmux has-session -t="$tmux_session_name" 2>/dev/null; then
-  tmux new-session -d -s "$tmux_session_name" "nvim index.md"
+  tmux new-session -d -s "$tmux_session_name" "nvim"
 fi
 
 # Check if neovim is running, if not open it
