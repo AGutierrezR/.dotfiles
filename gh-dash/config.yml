@@ -75,3 +75,8 @@ keybindings:
       command: >
         tmux new-window -n "{{.HeadRefName}}"
         "git fetch origin {{.HeadRefName}} && wt switch {{.HeadRefName}} -x 'exec $SHELL'"
+    - key: C
+      name: code review
+      command: >
+        tmux new-window -n "PR-{{.PrNumber}}"
+        "tuicr pr {{.PrNumber}}"
