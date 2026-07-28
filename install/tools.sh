@@ -27,6 +27,9 @@ install_app() {
             atuin)
                 curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
                 ;;
+            tuicr)
+                curl -fsSL tuicr.dev/install.sh | sh
+                ;;
             *)
                 if [ "$IS_CASK" = true ]; then
                     brew install --cask "$app"
