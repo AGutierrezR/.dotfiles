@@ -1,0 +1,5 @@
+$DOTFILES/pi/agent/extensions=$HOME/.pi/agent/extensions/
+$DOTFILES/pi/agent/npm=$HOME/.pi/agent/npm/
+$DOTFILES/pi/agent/keybindings.json=$HOME/.pi/agent/keybindings.json
+$DOTFILES/pi/agent/settings.json=$HOME/.pi/agent/settings.json
+
