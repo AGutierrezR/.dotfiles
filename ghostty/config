@@ -7,6 +7,12 @@ theme = catppuccin-mocha.conf
 # Set Option key as alt
 macos-option-as-alt = true
 
+# Ghostty binds Option+Left/Right to emacs-style word jump (ESC b / ESC f) by
+# default, which intercepts the raw arrow sequence before tmux ever sees it.
+# Unbind these so Option+Left/Right pass through as M-Left/M-Right for tmux.
+keybind = alt+left=unbind
+keybind = alt+right=unbind
+
 # keybindings
 keybind = cmd+s>r=reload_config
 keybind = cmd+s>x=close_surface
