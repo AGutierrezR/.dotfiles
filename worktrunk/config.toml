@@ -1,0 +1,5 @@
+# Configuration guide: https://worktrunk.dev/config/#worktree-path-template
+worktree-path = "~/worktrees/{{ repo }}/{{ branch | sanitize }}"
+
+[list]
+columns = ["branch", "status", "path"]
