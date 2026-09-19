@@ -1,0 +1,58 @@
+# Custom listening ports cable channel for television (tv)
+# Shows all listening TCP/UDP ports with PID, process name, and address.
+#
+# Usage:
+#   tv ports
+#
+# Keybindings:
+#   Enter      Show process details
+#   Ctrl+K     Kill the selected process (stays in picker to kill more)
+#   Ctrl+D     Force kill (kill -9)
+#   Ctrl+O     Toggle preview panel
+#
+# Preview shows full process details via `ps`.
+# Cross-platform: uses lsof (macOS) or ss (Linux).
+
+[metadata]
+name = "ports"
+description = "Listening ports: PID, process, address"
+
+[source]
+command = """
+if command -v lsof >/dev/null 2>&1; then
+  lsof -i -P -n 2>/dev/null | grep LISTEN | awk '{printf "%s\\t%s\\t%s\\n", $2, $1, $9}' | sort -u
+elif command -v ss >/dev/null 2>&1; then
+  ss -tlnp 2>/dev/null | tail -n +2 | awk '{
+    addr=$4; pid=$7;
+    gsub(/.*pid=/,"",pid); gsub(/,.*$/,"",pid);
+    gsub(/.*users:\\(\\("/,"",pid);
+    printf "%s\\t%s\\t%s\\n", pid, $7, addr
+  }' | sort -u
+fi
+"""
+display = "{split:\t:0}  {split:\t:1}  {split:\t:2}"
+
+[preview]
+command = "ps -p '{split:\t:0}' -o pid,ppid,%cpu,%mem,etime,command 2>/dev/null"
+
+[keybindings]
+enter = "actions:details"
+ctrl-k = ["actions:kill", "reload_source"]
+ctrl-d = ["actions:force_kill", "reload_source"]
+
+[actions.details]
+description = "Show full process details"
+command = "ps -p '{split:\t:0}' -o pid,ppid,user,%cpu,%mem,etime,command; echo '---'; lsof -i -P -n -p '{split:\t:0}' 2>/dev/null | grep LISTEN"
+mode = "execute"
+
+[actions.kill]
+description = "Kill the selected process(es)"
+command = "kill {split:\n:..|map:{split:\t:0}|join: }"
+separator = "\n"
+mode = "fork"
+
+[actions.force_kill]
+description = "Force kill (SIGKILL)"
+command = "kill -9 {split:\n:..|map:{split:\t:0}|join: }"
+separator = "\n"
+mode = "fork"
