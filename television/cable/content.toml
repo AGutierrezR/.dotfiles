@@ -1,6 +1,6 @@
 [metadata]
-name = "text"
-description = "A channel to find and select text from files"
+name = "content"
+description = "Find files by content, output the file path for Yazi to change directory"
 requirements = ["rg", "bat"]
 
 [source]
@@ -9,7 +9,7 @@ command = [
   { name = "Hidden", run = "rg . --no-heading --line-number --hidden --colors 'match:fg:white' --colors 'path:fg:blue' --color=always" },
 ]
 ansi = true
-output = "{strip_ansi|split:\\::..2}"
+output = "{strip_ansi|split:\\::0}"
 
 [preview]
 command = "bat -n --color=always '{strip_ansi|split:\\::0}'"
@@ -20,7 +20,8 @@ offset = '{strip_ansi|split:\::1}'
 preview_panel = { header = '{strip_ansi|split:\::..2}' }
 
 [keybindings]
-enter = "actions:edit"
+enter = "select_and_exit"
+ctrl-e = "actions:edit"
 ctrl-b = "actions:copy_path_abs"
 ctrl-y = "actions:copy_path"
 
@@ -42,4 +43,3 @@ description = "Copy the selected file absolute path to the clipboard"
 command = "printf '%s' \"$(realpath '{strip_ansi|split:\\::0}')\" | pbcopy"
 shell = "zsh"
 mode = "fork"
-
