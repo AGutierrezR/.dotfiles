@@ -1,5 +1,7 @@
 [init]
     defaultBranch = main
+[core]
+    excludesfile = ~/.dotfiles/git/.gitignore_global
 [diff]
     algorithm = histogram    # Clearer diffs on moved/edited lines
     colorMoved = plain       # Highlight moved blocks in diffs
