@@ -56,6 +56,8 @@ brew "rmpc"
 brew "sevenzip"
 # Interactive TUI for Homebrew
 brew "taproom"
+# General purpose fuzzy finder TUI
+brew "television"
 # Simplified and community-driven man pages
 brew "tldr"
 # Terminal multiplexer
