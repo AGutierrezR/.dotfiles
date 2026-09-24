@@ -5,9 +5,14 @@
 [mgr]
 
 prepend_keymap = [
-	{ on = "<C-y>", run = ["plugin system-clipboard 'copy'"] },
+	# { on = "<C-y>", run = ["plugin system-clipboard 'copy'"] },
 	# { on = "<C-p>", run = ["plugin system-clipboard --args=paste"] }
-	{ on = "<C-p>", run = "shell 'cb paste' --block", desc = "Paste from clipboard" },
+	# { on = "<C-p>", run = "shell 'cb paste' --block", desc = "Paste from clipboard" },
+	{ on = [ "[" ], run = "plugin goto-sibling -- prev", desc = "Go to the previous sibling folder" },
+	{ on = [ "]" ], run = "plugin goto-sibling -- next", desc = "Go to the next sibling folder" },
+	{ on  = "y", run = [ "yank", 'plugin clipboardx -- --action=copy' ], desc = "Yank selected files (copy)" },
+	{ on  = "x", run = [ "yank --cut", 'plugin clipboardx -- --action=copy' ], desc = "Yank selected files (cut)" },
+	{ on  = "<C-p>", run = [ 'plugin clipboardx -- --action=paste' ], desc = "Paste yanked system clipboard files" }
 ]
 
 keymap = [

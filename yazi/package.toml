@@ -1,0 +1,17 @@
+[[plugin.deps]]
+use = "FichteFoll/goto-sibling"
+rev = "bd85b36"
+hash = "235c02042a54fb28b37b5b709ca2cc07"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:vcs-files"
+rev = "f703392"
+hash = "4f2a05edce73aef2bceb2ee2c134c8f2"
+
+[[plugin.deps]]
+use = "XYenon/clipboard"
+rev = "b25ec96"
+hash = "9f07d7de37a430833ef33b92c0bcf8cb"
+
+[flavor]
+deps = []
