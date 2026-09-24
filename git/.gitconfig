@@ -29,6 +29,7 @@
     lnm = log --oneline --decorate --no-merge
     ahead = log --oneline @{push}..
     behind = log --oneline ..@{u}
+    mylog = !git log --author=\"$(git config user.name)\" --oneline
     merge-point = "!f() { git log -1 --oneline $(git merge-base \"$1\" \"$2\"); }; f"
 
     # Info with filtering
