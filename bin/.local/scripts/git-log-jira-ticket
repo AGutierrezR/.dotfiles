@@ -1,0 +1,34 @@
+#!/bin/bash
+
+DATE=$1
+
+if [ -z "$DATE" ]; then
+  echo "Use: $0 YYYY-MM-DD"
+  echo "Example: $0 2026-01-01"
+  exit 1
+fi
+
+AUTHOR=$(git config user.name)
+JIRA_BASE_URL=""
+
+if [[ -z "$AUTHOR" ]]; then
+  echo "AUTHOR is not set."
+  echo "Please set AUTHOR in the script: $0"
+  exit 1
+fi
+
+if [[ -z "$JIRA_BASE_URL" ]]; then
+  echo "JIRA_BASE_URL is not set."
+  echo "Please set JIRA_BASE_URL in the script: $0"
+  exit 1
+fi
+
+git log --author="$AUTHOR" \
+        --since="$DATE" \
+        --no-merges \
+        --grep="\[[A-Z]\+-[0-9]\+\]" \
+        --pretty=format:"%s" \
+        --reverse | \
+grep -oE "[A-Z]+-[0-9]+" | \
+sort -u | \
+sed "s|^|${JIRA_BASE_URL}|"
