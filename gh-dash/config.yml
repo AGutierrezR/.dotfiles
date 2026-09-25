@@ -1,12 +1,12 @@
 prSections:
   - title: "Mine"
     filters: "is:open author:@me"
+  - title: "Open"
+    filters: "is:open"
   - title: "Review Requested"
     filters: "is:open review-requested:@me"
   - title: "Involved"
     filters: "is:open involves:@me -author:@me"
-  - title: "Open"
-    filters: "is:open"
 
 issuesSections:
   - title: "My Issues"
@@ -74,7 +74,7 @@ keybindings:
       name: worktree
       command: >
         tmux new-window -n "{{.HeadRefName}}"
-        "git fetch origin {{.HeadRefName}} && wt switch {{.HeadRefName}} -x 'exec $SHELL'"
+        "git fetch origin {{.HeadRefName}} && wt switch {{.HeadRefName}} -x 'zsh'"
     - key: C
       name: code review
       command: >
