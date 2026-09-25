@@ -136,6 +136,7 @@
     rbsir = rebase -i --root
     rbsc = rebase --continue
     rbsa = rebase --abort
+    rbsim = rebase -i --autostash --keep-empty --no-autosquash --rebase-merges
 
     # Push/Pull
     ps = push
